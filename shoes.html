@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Shoes Details</title>
+</head>
+<body>
+
+<h1>Sport Shoes</h1>
+
+<img src="images/shoes.jpg" width="300">
+
+<h2>₹999</h2>
+
+<p>Comfortable running shoes for daily use.</p>
+
+<button onclick="addCart('Shoes',999)">Add to Cart</button>
+
+<br><br>
+<a href="index.html">⬅ Back</a>
+
+<script>
+function addCart(name, price){
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    cart.push({name, price});
+    localStorage.setItem("cart", JSON.stringify(cart));
+    alert(name + " added to cart");
+}
+</script>
+
+</body>
+</html>
