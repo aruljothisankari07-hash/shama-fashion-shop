@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHAMA Store</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:#f5f5f5;
+color:black;
+}
+
+/* NAV */
+nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:#111;
+color:white;
+padding:15px;
+flex-wrap:wrap;
+}
+
+nav a{
+color:white;
+text-decoration:none;
+margin-left:10px;
+}
+
+/* SEARCH */
+#search{
+padding:8px;
+border:none;
+border-radius:5px;
+width:200px;
+}
+
+/* HERO */
+.hero{
+text-align:center;
+padding:25px;
+background:linear-gradient(to right,#ff4b2b,#ff416c);
+color:white;
+}
+
+/* CATEGORY */
+.categories{
+display:flex;
+justify-content:center;
+gap:10px;
+padding:10px;
+flex-wrap:wrap;
+}
+
+.cat{
+background:white;
+padding:8px 15px;
+border-radius:20px;
+cursor:pointer;
+box-shadow:0 0 5px rgba(0,0,0,0.1);
+color:black;
+}
+
+/* PRODUCTS */
+.products{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:15px;
+padding:20px;
+}
+
+.card{
+background:white;
+padding:10px;
+border-radius:10px;
+text-align:center;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+transition:0.3s;
+color:black;
+}
+
+.card:hover{
+transform:scale(1.05);
+}
+
+.card img{
+width:100%;
+height:180px;
+object-fit:cover;
+border-radius:10px;
+cursor:pointer;
+}
+
+button{
+background:#111;
+color:white;
+border:none;
+padding:8px;
+width:100%;
+border-radius:5px;
+cursor:pointer;
+transition:0.3s;
+}
+
+button:hover{
+background:#ff416c;
+}
+
+/* MOBILE */
+@media(max-width:600px){
+nav{flex-direction:column;gap:10px;text-align:center;}
+#search{width:90%;}
+.categories{flex-direction:column;align-items:center;}
+}
+
+/* DARK MODE */
+.dark{
+background:#111;
+color:white;
+}
+
+.dark nav{
+background:#000;
+}
+
+.dark .card{
+background:#222;
+color:white;
+}
+
+.dark .cat{
+background:#333;
+color:white;
+border:1px solid #555;
+}
+
+.dark button{
+background:#444;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAV -->
+<nav>
+<div><b>SHAMA FASHION SHOP</b></div>
+
+<input type="text" id="search" placeholder="Search products..." onkeyup="searchProduct()">
+
+<div>
+🛒 Cart: <span id="count">0</span>
+<a href="cart.html">Cart</a>
+<a href="login.html">Login</a>
+<a href="signup.html">Signup</a>
+<a href="orders.html">My Orders</a>
+<a href="wishlist.html">❤️ Wishlist</a>
+
+<button onclick="toggleTheme()">🌙 Dark Mode</button>
+</div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+<h1>SHAMA FASHION SHOP</h1>
+<p>Modern Shopping Experience</p>
+</header>
+
+<!-- CATEGORY -->
+<div class="categories">
+<div class="cat" onclick="filter('all')">All</div>
+<div class="cat" onclick="filter('watch')">Watch</div>
+<div class="cat" onclick="filter('shoes')">Shoes</div>
+<div class="cat" onclick="filter('shirt')">Shirt</div>
+<div class="cat" onclick="filter('bag')">Bag</div>
+</div>
+
+<!-- PRODUCTS -->
+<section class="products" id="list"></section>
+
+<script src="products.js"></script>
+<script src="cart.js"></script>
+
+<script>
+let count = JSON.parse(localStorage.getItem("cart"))?.length || 0;
+document.getElementById("count").innerText = count;
+
+// LOAD PRODUCTS
+function loadProducts(){
+let container = document.getElementById("list");
+
+products.forEach(p=>{
+let div = document.createElement("div");
+div.className = "card";
+div.setAttribute("data-type", p.type);
+
+div.innerHTML = `
+<a href="${p.type}.html">
+<img src="${p.image}">
+</a>
+
+<h3>${p.name}</h3>
+<p>₹${p.price}</p>
+
+<button onclick="addWishlist('${p.name}',${p.price},'${p.image}')">
+❤️ Wishlist
+</button>
+
+<button onclick="addCart('${p.name}',${p.price})">
+🛒 Add to Cart
+</button>
+`;
+
+container.appendChild(div);
+});
+}
+
+// WISHLIST
+function addWishlist(name, price, image){
+let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+wishlist.push({name, price, image});
+localStorage.setItem("wishlist", JSON.stringify(wishlist));
+alert(name + " added to wishlist ❤️");
+}
+
+// SEARCH
+function searchProduct(){
+let input = document.getElementById("search").value.toLowerCase();
+let cards = document.querySelectorAll(".card");
+
+cards.forEach(card=>{
+let name = card.querySelector("h3").innerText.toLowerCase();
+card.style.display = name.includes(input) ? "block" : "none";
+});
+}
+
+// FILTER
+function filter(type){
+let cards = document.querySelectorAll(".card");
+
+cards.forEach(card=>{
+if(type === "all"){
+card.style.display = "block";
+}else{
+card.style.display = card.getAttribute("data-type") === type ? "block" : "none";
+}
+});
+}
+
+// DARK MODE
+function toggleTheme(){
+document.body.classList.toggle("dark");
+
+if(document.body.classList.contains("dark")){
+localStorage.setItem("theme","dark");
+}else{
+localStorage.setItem("theme","light");
+}
+}
+
+window.onload = function(){
+loadProducts();
+
+let theme = localStorage.getItem("theme");
+if(theme === "dark"){
+document.body.classList.add("dark");
+}
+}
+</script>
+
+</body>
+</html>
