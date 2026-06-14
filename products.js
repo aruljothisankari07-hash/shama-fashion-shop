@@ -6,25 +6,25 @@ products = [
 {
 name:"Smart Watch",
 price:1999,
-image:"images/watch.jpg",
+image:"watch.jpg",
 type:"watch"
 },
 {
 name:"Running Shoes",
 price:2999,
-image:"images/shoes.jpg",
+image:"shoes.jpg",
 type:"shoes"
 },
 {
 name:"Casual Shirt",
 price:999,
-image:"images/shirt.jpg",
+image:"shirt.jpg",
 type:"shirt"
 },
 {
 name:"Travel Bag",
 price:1499,
-image:"images/bag.jpg",
+image:"bag.jpg",
 type:"bag"
 }
 ];
