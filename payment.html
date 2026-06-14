@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Payment</title>
+
+<style>
+body{
+font-family:Arial;
+background:#f5f5f5;
+margin:0;
+}
+
+.box{
+max-width:400px;
+margin:50px auto;
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+h1{
+text-align:center;
+}
+
+.total{
+font-size:20px;
+font-weight:bold;
+margin:10px 0;
+}
+
+button{
+width:100%;
+padding:10px;
+background:green;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+font-size:16px;
+}
+
+button:hover{
+background:#111;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+<h1>💳 Checkout</h1>
+
+<h2>Total Amount: <span id="total"></span></h2>
+
+<h3>Select Payment Method</h3>
+
+<input type="radio" name="pay" checked> UPI<br><br>
+<input type="radio" name="pay"> Card<br><br>
+<input type="radio" name="pay"> Cash on Delivery<br><br>
+
+<button onclick="pay()">💳 Pay Now</button>
+
+</div>
+
+<script>
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+// total calculate (safe)
+let total = 0;
+
+cart.forEach(item=>{
+total += (item.price || 0) * (item.qty || 1);
+});
+
+document.getElementById("total").innerText = "₹ " + total;
+
+function pay(){
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+// ❌ empty cart stop pannum
+if(cart.length === 0){
+alert("Cart is empty!");
+return;
+}
+
+let orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+let totalAmount = 0;
+
+cart.forEach(item=>{
+totalAmount += (item.price || 0) * (item.qty || 1);
+});
+
+let newOrder = {
+items: cart,
+amount: totalAmount,
+date: new Date().toLocaleDateString('en-GB')
+};
+
+orders.push(newOrder);
+
+localStorage.setItem("orders", JSON.stringify(orders));
+
+alert("Payment Successful 🎉");
+
+localStorage.removeItem("cart");
+
+window.location.href = "success.html";
+}
+</script>
+</body>
+</html>
